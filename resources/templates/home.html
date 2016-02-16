@@ -2,13 +2,59 @@
 {% block content %}
   <div class="jumbotron">
     <h1>Welcome to parques</h1>
-    <p>Time to start building your site!</p>
-    <p><a class="btn btn-primary btn-lg" href="http://luminusweb.net">Learn more &raquo;</a></p>
   </div>
 
   <div class="row">
     <div class="span12">
+      <ul class="content">
+        {% for park in parks %}
+        <li>
+          <p>{{park.id}}</p>
+          <p>{{park.name}}</p>
+          <p>{{park.city}}</p>
+          <p>{{park.address}}</p>
+        </li>
+        {% endfor %}
+      </ul>
     {{docs|markdown}}
+    </div>
+  </div>
+  <div class="row">
+    <div class="span12">
+      <form method="POST" action="/park">
+        <div class="form-group">
+          {% csrf-field %}
+          <p>
+            Name:
+            <input class="form-control"
+              type="text"
+              name="name"
+              value="" />
+          </p>
+          <p>
+            Latitude:
+            <input class="form-control"
+              type="text"
+              name="latitude"
+              value="" />
+          </p>
+          <p>
+            Longitude:
+            <input class="form-control"
+              type="text"
+              name="longitude"
+              value="" />
+          </p>
+          <p>
+            Description:
+            <textarea class="form-control"
+              rows="4"
+              cols="50"
+              name="description"></textarea>
+          </p>
+          <input type="submit" class="btn btn-primary" value="Add park" />
+        </div>
+      </form>
     </div>
   </div>
 {% endblock %}

@@ -7,6 +7,11 @@
             [config.core :refer [env]]
             [mount.core :as mount]))
 
+(defn submap? [m1 m2]
+  "Checks whether m contains all entries in sub."
+  (and (every? (set (keys m1)) (keys m2))
+     (every? #(= (m1 %)(m2 %)) (keys m2))))
+
 (use-fixtures
   :once
   (fn [f]
@@ -14,21 +19,32 @@
     (migrations/migrate ["migrate"])
     (f)))
 
-(deftest test-users
+(deftest test-parks
   (with-transaction [t-conn db/*db*]
     (jdbc/db-set-rollback-only! t-conn)
-    (is (= 1 (db/create-user!
-               {:id         "1"
-                :first_name "Sam"
-                :last_name  "Smith"
-                :email      "sam.smith@example.com"
-                :pass       "pass"})))
-    (is (= [{:id         "1"
-             :first_name "Sam"
-             :last_name  "Smith"
-             :email      "sam.smith@example.com"
-             :pass       "pass"
-             :admin      nil
-             :last_login nil
-             :is_active  nil}]
-           (db/get-user {:id "1"})))))
+    (def park-returned (db/create-park<!
+               {:name    "Sam"
+                :city    "Madrid"
+                :address "Oña 96"
+                :latitude 14.222
+                :longitude 44.33
+                :floor_type_id 1
+                :description "nada"}))
+    (is (submap? park-returned
+                {:name    "Sam"
+                :city    "Madrid"
+                :address "Oña 96"
+                :latitude 14.222
+                :longitude 44.33
+                :floor_type_id 1
+                :description "nada"}))
+
+    (def park-returned2 (db/get-park {:id (:id park-returned)}))
+    (is (submap? (first park-returned2)
+                {:name    "Sam"
+                :city    "Madrid"
+                :address "Oña 96"
+                :latitude 14.222
+                :longitude 44.33
+                :floor_type_id 1
+                :description "nada"}))))

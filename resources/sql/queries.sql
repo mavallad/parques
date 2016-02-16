@@ -1,21 +1,28 @@
--- name: create-user!
--- creates a new user record
-INSERT INTO users
-(id, first_name, last_name, email, pass)
-VALUES (:id, :first_name, :last_name, :email, :pass)
+-- name: create-park<!
+-- creates a new park record
+INSERT INTO parks
+(name, city, address, latitude, longitude, floor_type_id, description)
+VALUES (:name, :city, :address, :latitude, :longitude, :floor_type_id, :description)
 
--- name: update-user!
--- update an existing user record
-UPDATE users
-SET first_name = :first_name, last_name = :last_name, email = :email
+-- name: update-park!
+-- update an existing park record
+UPDATE parks
+SET name = :name, city = :city, address = :address,
+    latitude = :latitude, longitude = :longitude,
+    floor_type_id = :floor_type_id, description = :description,
+    modification_date = :modification_date
 WHERE id = :id
 
--- name: get-user
--- retrieve a user given the id.
-SELECT * FROM users
+-- name: get-parks
+-- selects all available parks
+SELECT * FROM parks
+
+-- name: get-park
+-- retrieve a park given the id.
+SELECT * FROM parks
 WHERE id = :id
 
--- name: delete-user!
--- delete a user given the id
-DELETE FROM users
+-- name: delete-park!
+-- delete a park given the id
+DELETE FROM parks
 WHERE id = :id
